@@ -6,15 +6,18 @@ All notable changes to this project will be documented in this file.
 ## [13.0.0.3]
 ### Added
 - Support for MAX17043 fuel-gauge systems Lipo batteries (#18788)
+- Support for multiple PCA9685 with extended functionality (#18805)
 
 ### Breaking Changed
 
 ### Changed
 - Initial ``DisplayMode`` from 1 to 0 and ``DisplayDimmmer`` from 10% to 50% (#19138)
+- ESP32 Framework (Core) from v2.0.10 to v2.0.11
+- Berry `mqtt.publish` now distinguishes between `string` and `bytes`
 
 ### Fixed
 - Initial battery level percentage (#19160)
-- Berry SK6812_GRBW crash
+- Berry SK6812_GRBW crash (#19166)
 
 ### Removed
 
