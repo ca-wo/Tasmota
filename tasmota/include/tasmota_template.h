@@ -150,6 +150,7 @@ enum UserSelectablePins {
   GPIO_NEOPOOL_TX, GPIO_NEOPOOL_RX,    // Sugar Valley RS485 interface
   GPIO_SDM72_TX, GPIO_SDM72_RX,        // SDM72 Serial interface
   GPIO_TM1637CLK, GPIO_TM1637DIO,      // TM1637 interface
+  GPIO_TM1640CLK, GPIO_TM1640DIO,      // TM1640 interface
   GPIO_PROJECTOR_CTRL_TX, GPIO_PROJECTOR_CTRL_RX,  // LCD/DLP Projector Serial Control
   GPIO_SSD1351_DC,
   GPIO_XPT2046_CS,                     // XPT2046 SPI Chip Select
@@ -403,6 +404,7 @@ const char kSensorNames[] PROGMEM =
   D_SENSOR_NEOPOOL_TX "|" D_SENSOR_NEOPOOL_RX "|"
   D_SENSOR_SDM72_TX "|" D_SENSOR_SDM72_RX "|"
   D_SENSOR_TM1637_CLK "|" D_SENSOR_TM1637_DIO "|"
+  D_SENSOR_TM1640_CLK "|" D_SENSOR_TM1640_DIO "|"
   D_SENSOR_PROJECTOR_CTRL_TX "|" D_SENSOR_PROJECTOR_CTRL_RX "|"
   D_SENSOR_SSD1351_DC "|"
   D_SENSOR_XPT2046_CS "|"
@@ -674,6 +676,10 @@ const uint16_t kGpioNiceList[] PROGMEM = {
   AGPIO(GPIO_TM1638DIO),
   AGPIO(GPIO_TM1638STB),
 #endif  // USE_DISPLAY_TM1637
+#ifdef USE_DISPLAY_TM1640
+  AGPIO(GPIO_TM1640CLK),
+  AGPIO(GPIO_TM1640DIO),
+#endif  // USE_DISPLAY_TM1640
   AGPIO(GPIO_BACKLIGHT),                // Display backlight control
   AGPIO(GPIO_OLED_RESET),               // OLED Display Reset
 #ifdef ESP32
