@@ -180,7 +180,7 @@ const uint8_t icons[][64] PROGMEM = {
 
 MLED *tm1640display;
 
-enum display_types
+enum matrix_types
 {
   TM1640
 };
@@ -196,14 +196,14 @@ struct
   uint8_t iteration = 0;
   uint8_t scroll_counter = 0;
   uint8_t scroll_counter_max = 3;
-  uint8_t display_type = TM1640;
+  uint8_t matrix_type = TM1640;
   uint8_t digit_order[6] = { 0, 1, 2, 3, 4, 5 };
 
   bool init_done = false;
   bool scroll = false;
   bool show_clock = false;
   bool clock_24 = false;
-} TM1640Data;
+} TM1640_settings;
 
 /*********************************************************************************************\
 * Init function
@@ -213,7 +213,7 @@ void TM1640Init(void)
 {
   if (PinUsed(GPIO_TM1640CLK) && PinUsed(GPIO_TM1640DIO))
   {
-    TM1640Data.display_type = TM1640;
+    TM1640_settings.matrix_type = TM1640;
     if ((!Settings->display_width || Settings->display_width > 1))
     {
       Settings->display_width = 1;
@@ -232,32 +232,32 @@ void TM1640Init(void)
   uint8_t dimmer16 = GetDisplayDimmer16();
   if(!dimmer16 || dimmer16 < 2 || dimmer16 > 15) SetDisplayDimmer(50);
 
-  if (TM1640 == TM1640Data.display_type)
+  if (TM1640 == TM1640_settings.matrix_type)
   {
-    strcpy_P(TM1640Data.model_name, PSTR("TM1640"));
+    strcpy_P(TM1640_settings.model_name, PSTR("TM1640"));
     tm1640display = new MLED(3, Pin(GPIO_TM1640DIO), Pin(GPIO_TM1640CLK));
-    AddLog(LOG_LEVEL_INFO, PSTR("DSP: INIT(if (TM1640 == TM1640Data.display_type))"));
+    AddLog(LOG_LEVEL_INFO, PSTR("DSP: INIT(if (TM1640 == TM1640_settings.matrix_type))"));
   }
   TM1640ClearDisplay();
   TM1640Dim();
-  TM1640Data.init_done = true;
-  AddLog(LOG_LEVEL_INFO, PSTR("DSP: %s with %d digits (type %d)"), TM1640Data.model_name, Settings->display_width, Settings->display_options.type);
+  TM1640_settings.init_done = true;
+  AddLog(LOG_LEVEL_INFO, PSTR("DSP: %s with %d digits (type %d)"), TM1640_settings.model_name, Settings->display_width, Settings->display_options.type);
 }
 
 // Function to fix order of hardware digits for different TM1640 variants
 void TM1640SetDigitOrder(void) {
   if (0 == Settings->display_options.type) {
     for (uint32_t i = 0; i < 6; i++) {
-      TM1640Data.digit_order[i] = i;
+      TM1640_settings.digit_order[i] = i;
     }
   }
   else if (1 == Settings->display_options.type) {
-    TM1640Data.digit_order[0] = 2;
-    TM1640Data.digit_order[1] = 1;
-    TM1640Data.digit_order[2] = 0;
-    TM1640Data.digit_order[3] = 5;
-    TM1640Data.digit_order[4] = 4;
-    TM1640Data.digit_order[5] = 3;
+    TM1640_settings.digit_order[0] = 2;
+    TM1640_settings.digit_order[1] = 1;
+    TM1640_settings.digit_order[2] = 0;
+    TM1640_settings.digit_order[3] = 5;
+    TM1640_settings.digit_order[4] = 4;
+    TM1640_settings.digit_order[5] = 3;
   }
 }
 
@@ -313,16 +313,19 @@ bool CmndTM1640Number(bool clear)
   char pad = (leadingzeros ? '0' : ' ');
   uint32_t i = position;
   uint8_t rawBytes[1];
-
+  AddLog(LOG_LEVEL_DEBUG, PSTR("TM7: i %d"), i);
   for (; i < position + (length - strlen(txt)); i++)
   {
     if (i > Settings->display_width)
       break;
-    if (TM1640 == TM1640Data.display_type)
+    if (TM1640 == TM1640_settings.matrix_type)
     {
+      AddLog(LOG_LEVEL_DEBUG, PSTR("TM7: num %d"), num);
       if (i > 2)
         break;
-      tm1640display->print(i);
+      tm1640display->clear();
+      tm1640display->setCursor(1, 0);
+      tm1640display->print(num);
       tm1640display->writeDisplay();
     }
   }
@@ -401,9 +404,9 @@ bool CmndTM1640Float(bool clear)
 bool CmndTM1640Clear(void)
 {
   TM1640ClearDisplay();
-  sprintf(TM1640Data.msg, PSTR("Cleared"));
-  XdrvMailbox.data = TM1640Data.msg;
-  AddLog(LOG_LEVEL_INFO, PSTR("DSP: %s cleared, data: %s"), TM1640Data.model_name, TM1640Data.msg);
+  sprintf(TM1640_settings.msg, PSTR("Cleared"));
+  XdrvMailbox.data = TM1640_settings.msg;
+  AddLog(LOG_LEVEL_INFO, PSTR("DSP: %s cleared, data: %s"), TM1640_settings.model_name, TM1640_settings.msg);
   return true;
 }
 
@@ -412,17 +415,17 @@ bool CmndTM1640Clear(void)
 // \*********************************************************************************************/
 void TM1640ClearDisplay(void)
 {
-  if (TM1640 == TM1640Data.display_type)
+  if (TM1640 == TM1640_settings.matrix_type)
   {
     tm1640display->clear();
     tm1640display->writeDisplay();
-    AddLog(LOG_LEVEL_INFO, PSTR("DSP: %s cleared, data: %s"), TM1640Data.model_name, TM1640Data.msg);
+    AddLog(LOG_LEVEL_INFO, PSTR("DSP: %s cleared, data: %s"), TM1640_settings.model_name, TM1640_settings.msg);
   }
 }
 
 /*********************************************************************************************\
 * Display scrolling text
-* Command:   DisplayTM1640Data.scroll_text text
+* Command:   DisplayTM1640_settings.scroll_text text
 \*********************************************************************************************/
 bool CmndTM1640ScrollText(void)
 {
@@ -445,40 +448,40 @@ bool CmndTM1640ScrollText(void)
 
   AddLog(LOG_LEVEL_DEBUG, PSTR("TM7: sString %s, maxLoopCount %d"), sString, maxLoopCount);
 
-  TM1640Data.scroll_counter_max = maxLoopCount;
+  TM1640_settings.scroll_counter_max = maxLoopCount;
 
   if (strlen(sString) > SCROLL_MAX_LEN)
   {
-    snprintf(TM1640Data.msg, sizeof(TM1640Data.msg), PSTR("Text too long. Length should be less than %d"), SCROLL_MAX_LEN);
-    XdrvMailbox.data = TM1640Data.msg;
+    snprintf(TM1640_settings.msg, sizeof(TM1640_settings.msg), PSTR("Text too long. Length should be less than %d"), SCROLL_MAX_LEN);
+    XdrvMailbox.data = TM1640_settings.msg;
     return false;
   }
   else
   {
-    snprintf(TM1640Data.scroll_text, sizeof(TM1640Data.scroll_text), PSTR("                                                               "));
-    snprintf(TM1640Data.scroll_text, Settings->display_width + sizeof(TM1640Data.scroll_text), PSTR("        %s"), &sString);
-    TM1640Data.scroll_text[strlen(sString) + Settings->display_width] = 0;
-    TM1640Data.scroll_index = 0;
-    TM1640Data.scroll = true;
-    TM1640Data.scroll_counter = 0;
+    snprintf(TM1640_settings.scroll_text, sizeof(TM1640_settings.scroll_text), PSTR("                                                               "));
+    snprintf(TM1640_settings.scroll_text, Settings->display_width + sizeof(TM1640_settings.scroll_text), PSTR("        %s"), &sString);
+    TM1640_settings.scroll_text[strlen(sString) + Settings->display_width] = 0;
+    TM1640_settings.scroll_index = 0;
+    TM1640_settings.scroll = true;
+    TM1640_settings.scroll_counter = 0;
     return true;
   }
 }
 
 /*********************************************************************************************\
 * Sets the scroll delay for scrolling text.
-* Command:  DisplayTM1640Data.scroll_delay delay {0-15}    // default = 4
+* Command:  DisplayTM1640_settings.scroll_delay delay {0-15}    // default = 4
 \*********************************************************************************************/
 bool CmndTM1640ScrollDelay(void)
 {
   if (ArgC() == 0)
   {
-    XdrvMailbox.payload = TM1640Data.scroll_delay;
+    XdrvMailbox.payload = TM1640_settings.scroll_delay;
     return true;
   }
-  if (TM1640Data.scroll_delay < 0)
-    TM1640Data.scroll_delay = 0;
-  TM1640Data.scroll_delay = XdrvMailbox.payload;
+  if (TM1640_settings.scroll_delay < 0)
+    TM1640_settings.scroll_delay = 0;
+  TM1640_settings.scroll_delay = XdrvMailbox.payload;
   return true;
 }
 
@@ -487,55 +490,55 @@ bool CmndTM1640ScrollDelay(void)
 \*********************************************************************************************/
 void TM1640ScrollText(void)
 {
-  if(!TM1640Data.scroll) return;
-  TM1640Data.iteration++;
-  if (TM1640Data.scroll_delay)
-    TM1640Data.iteration = TM1640Data.iteration % TM1640Data.scroll_delay;
+  if(!TM1640_settings.scroll) return;
+  TM1640_settings.iteration++;
+  if (TM1640_settings.scroll_delay)
+    TM1640_settings.iteration = TM1640_settings.iteration % TM1640_settings.scroll_delay;
   else
-    TM1640Data.iteration = 0;
-  if (TM1640Data.iteration)
+    TM1640_settings.iteration = 0;
+  if (TM1640_settings.iteration)
     return;
 
-  if (TM1640Data.scroll_index > strlen(TM1640Data.scroll_text))
+  if (TM1640_settings.scroll_index > strlen(TM1640_settings.scroll_text))
   {
-    TM1640Data.scroll_index = 0;
-    TM1640Data.scroll_counter++;
-    if(TM1640Data.scroll_counter_max != 0 && (TM1640Data.scroll_counter >= TM1640Data.scroll_counter_max)) {
-      TM1640Data.scroll = false;
+    TM1640_settings.scroll_index = 0;
+    TM1640_settings.scroll_counter++;
+    if(TM1640_settings.scroll_counter_max != 0 && (TM1640_settings.scroll_counter >= TM1640_settings.scroll_counter_max)) {
+      TM1640_settings.scroll = false;
       return;
     }    
   }
   uint8_t rawBytes[1];
-  for (uint32_t i = 0, j = TM1640Data.scroll_index; i < 1 + strlen(TM1640Data.scroll_text); i++, j++)
+  for (uint32_t i = 0, j = TM1640_settings.scroll_index; i < 1 + strlen(TM1640_settings.scroll_text); i++, j++)
   {
     if (i > (Settings->display_width - 1))
     {
       break;
     }
-    // rawBytes[0] = tm1640display->encode(TM1640Data.scroll_text[j]);
+    // rawBytes[0] = tm1640display->encode(TM1640_settings.scroll_text[j]);
     bool dotSkipped = false;
-    if (TM1640Data.scroll_text[j + 1] == '.')
+    if (TM1640_settings.scroll_text[j + 1] == '.')
     {
       dotSkipped = true;
       rawBytes[0] = rawBytes[0] | 128;
       j++;
     }
-    else if (TM1640Data.scroll_text[j] == '^')
+    else if (TM1640_settings.scroll_text[j] == '^')
     {
       rawBytes[0] = 1 | 2 | 32 | 64;
     }
-    if (!dotSkipped && TM1640Data.scroll_text[j] == '.')
+    if (!dotSkipped && TM1640_settings.scroll_text[j] == '.')
     {
       j++;
-      TM1640Data.scroll_index++;
-      // rawBytes[0] = tm1640display->encode(TM1640Data.scroll_text[j]);
+      TM1640_settings.scroll_index++;
+      // rawBytes[0] = tm1640display->encode(TM1640_settings.scroll_text[j]);
     }
-    if (TM1640Data.scroll_text[j + 1] == '.')
+    if (TM1640_settings.scroll_text[j + 1] == '.')
     {
       rawBytes[0] = rawBytes[0] | 128;
     }
   }
-  TM1640Data.scroll_index++;
+  TM1640_settings.scroll_index++;
 }
 
 /*********************************************************************************************\
@@ -552,11 +555,11 @@ bool CmndTM1640Level(void)
   }
 
   uint8_t totalBars = 2 * Settings->display_width;
-  AddLog(LOG_LEVEL_DEBUG, PSTR("TM7: TM1640Data.model_name %s CmndTM1640Level totalBars=%d"), TM1640Data.model_name, totalBars);
+  AddLog(LOG_LEVEL_DEBUG, PSTR("TM7: TM1640_settings.model_name %s CmndTM1640Level totalBars=%d"), TM1640_settings.model_name, totalBars);
   float barsToDisplay = totalBars * val / 100.0f;
   char txt[5];
   ext_snprintf_P(txt, sizeof(txt), PSTR("%*_f"), 1, &barsToDisplay);
-  AddLog(LOG_LEVEL_DEBUG, PSTR("TM7: TM1640Data.model_name %s CmndTM1640Level barsToDisplay=%s"), TM1640Data.model_name, txt);
+  AddLog(LOG_LEVEL_DEBUG, PSTR("TM7: TM1640_settings.model_name %s CmndTM1640Level barsToDisplay=%s"), TM1640_settings.model_name, txt);
   char s[4];
   ext_snprintf_P(s, sizeof(s), PSTR("%0_f"), &barsToDisplay);
   uint8_t numBars = atoi(s);
@@ -582,8 +585,8 @@ bool CmndTM1640Level(void)
 \*********************************************************************************************/
 bool CmndTM1640Raw(void)
 {
-  AddLog(LOG_LEVEL_INFO, PSTR("DSP: %s CmndTM1640Raw : %d"), TM1640Data.model_name, 1);
-  uint8_t DATA[6] = {0, 0, 0, 0, 0, 0};
+  AddLog(LOG_LEVEL_DEBUG, PSTR("DSP: %s CmndTM1640Raw : %s"), TM1640_settings.model_name, XdrvMailbox.data);
+  uint8_t DATA[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 
   char as[CMD_MAX_LEN];
   char bs[CMD_MAX_LEN];
@@ -591,73 +594,63 @@ bool CmndTM1640Raw(void)
   char ds[CMD_MAX_LEN];
   char es[CMD_MAX_LEN];
   char fs[CMD_MAX_LEN];
-
-  char sLength[CMD_MAX_LEN];
-  char sPos[CMD_MAX_LEN];
-
-  uint32_t position = 0;
-  uint32_t length = 0;
-
+  char gs[CMD_MAX_LEN];
+  char hs[CMD_MAX_LEN];
+  char cmnd[CMD_MAX_LEN];
+  AddLog(LOG_LEVEL_DEBUG, PSTR("DSP: %s CmndTM1640Raw ArgC(): %d"), TM1640_settings.model_name, ArgC());
+  if (ArgC() > 9)
+  {
+    return false;
+  }
+  
   switch (ArgC())
   {
+  case 9:
+    subStr(hs, XdrvMailbox.data, ",", 9);
+    DATA[7] = atoi(hs);
   case 8:
-    subStr(fs, XdrvMailbox.data, ",", 8);
-    DATA[5] = atoi(fs);
+    subStr(gs, XdrvMailbox.data, ",", 8);
+    DATA[6] = atoi(gs);
   case 7:
-    subStr(es, XdrvMailbox.data, ",", 7);
-    DATA[4] = atoi(es);
+    subStr(fs, XdrvMailbox.data, ",", 7);
+    DATA[5] = atoi(fs);
   case 6:
-    subStr(ds, XdrvMailbox.data, ",", 6);
-    DATA[3] = atoi(ds);
+    subStr(es, XdrvMailbox.data, ",", 6);
+    DATA[4] = atoi(es);
   case 5:
-    subStr(cs, XdrvMailbox.data, ",", 5);
-    DATA[2] = atoi(cs);
+    subStr(ds, XdrvMailbox.data, ",", 5);
+    DATA[3] = atoi(ds);
   case 4:
-    subStr(bs, XdrvMailbox.data, ",", 4);
-    DATA[1] = atoi(bs);
+    subStr(cs, XdrvMailbox.data, ",", 4);
+    DATA[2] = atoi(cs);
   case 3:
-    subStr(as, XdrvMailbox.data, ",", 3);
-    DATA[0] = atoi(as);
+    subStr(bs, XdrvMailbox.data, ",", 3);
+    DATA[1] = atoi(bs);
   case 2:
-    subStr(sLength, XdrvMailbox.data, ",", 2);
-    length = atoi(sLength);
+    subStr(as, XdrvMailbox.data, ",", 2);
+    DATA[0] = atoi(as);
   case 1:
-    subStr(sPos, XdrvMailbox.data, ",", 1);
-    position = atoi(sPos);
+    subStr(cmnd, XdrvMailbox.data, ",", 1);
   }
 
-  if (!length)
-    length = ArgC() - 2;
-  if (length < 0 || length > Settings->display_width)
-    length = Settings->display_width;
-  if (position < 0 || position > (Settings->display_width - 1))
-    position = 0;
-
-  AddLog(LOG_LEVEL_DEBUG, PSTR("TM7: a %d, b %d, c %d, d %d, e %d, f %d, len %d, pos %d"),
-         DATA[0], DATA[1], DATA[2], DATA[3], DATA[4], DATA[5], length, position);
-
-  return true;
-}
-
-bool CmndTM1640Dots(void)
-{
-  AddLog(LOG_LEVEL_INFO, PSTR("DSP: %s CmndTM1640Dots : %s"), TM1640Data.model_name, XdrvMailbox.data);
-  char sString[CMD_MAX_LEN + 1];
-  uint32_t index = 0;
-  switch (ArgC())
-  {
-  case 1:
-    subStr(sString, XdrvMailbox.data, ",", 1);
-    index = atoi(sString);
-    AddLog(LOG_LEVEL_INFO, PSTR("DSP: %s CmndTM1640Dots:index : %d"), TM1640Data.model_name, index);
-  }
-
-  AddLog(LOG_LEVEL_INFO, PSTR("TM7: icons %d"), icons[index]);
+  AddLog(LOG_LEVEL_DEBUG, PSTR("TM7: cmnd %s, a %d, b %d, c %d, d %d, e %d, f %d, g %d, h %d"),
+         cmnd, DATA[0], DATA[1], DATA[2], DATA[3], DATA[4], DATA[5], DATA[6], DATA[7]);
+  
   TM1640ClearDisplay();
-  tm1640display->drawBitmap(0, 0, icons[index], 8, 8, 1);
-  // tm1640display->drawPixel(index, index, 1);
+  if(strcmp("bytes", cmnd) == 0)
+  {
+    AddLog(LOG_LEVEL_DEBUG, PSTR("TM7: cmnd %s"), cmnd);
+    tm1640display->drawBitmap(0, 0, DATA, 8, 8, 1);
+  }
+  else if (strcmp("dots", cmnd) == 0)
+  {
+    if (sizeof(icons)/sizeof(icons[0]) > DATA[0])
+    {
+      AddLog(LOG_LEVEL_DEBUG, PSTR("TM7: cmnd %s"), cmnd);
+      tm1640display->drawBitmap(0, 0, icons[DATA[0]], 8, 8, 1);
+    }
+  }
   tm1640display->writeDisplay();
-
   return true;
 }
 
@@ -701,9 +694,9 @@ bool CmndTM1640Text(bool clear)
     length = Settings->display_width;
 
   uint32_t i = position;
-  if (TM1640 == TM1640Data.display_type)
+  if (TM1640 == TM1640_settings.matrix_type)
   {
-    AddLog(LOG_LEVEL_INFO, PSTR("DSP: %s DisplayText: %s"), TM1640Data.model_name, sString);
+    AddLog(LOG_LEVEL_INFO, PSTR("DSP: %s DisplayText: %s"), TM1640_settings.model_name, sString);
     tm1640display->setCursor(0,0);
     tm1640display->print(sString);
     tm1640display->writeDisplay();
@@ -720,19 +713,19 @@ bool CmndTM1640Text(bool clear)
 bool CmndTM1640Clock(void)
 {
 
-  TM1640Data.show_clock = XdrvMailbox.payload;
+  TM1640_settings.show_clock = XdrvMailbox.payload;
 
   if (ArgC() == 0)
     XdrvMailbox.payload = 1;
   if (XdrvMailbox.payload > 1) {
-    TM1640Data.clock_24 = true;
+    TM1640_settings.clock_24 = true;
     XdrvMailbox.payload = 2;
   } else {
-    TM1640Data.clock_24 = false;
+    TM1640_settings.clock_24 = false;
     XdrvMailbox.payload = 1;
   }
 
-  AddLog(LOG_LEVEL_DEBUG, PSTR("TM7: TM1640Data.show_clock %d, TM1640Data.clock_24 %d"), TM1640Data.show_clock, TM1640Data.clock_24);
+  AddLog(LOG_LEVEL_DEBUG, PSTR("TM7: TM1640_settings.show_clock %d, TM1640_settings.clock_24 %d"), TM1640_settings.show_clock, TM1640_settings.clock_24);
 
   TM1640ClearDisplay();
   return true;
@@ -748,7 +741,7 @@ void TM1640ShowTime()
   // uint8_t hr = 1;
   // uint8_t mn = 0;
   char z = ' ';
-  if (TM1640Data.clock_24)
+  if (TM1640_settings.clock_24)
   {
     z = '0';
   }
@@ -783,13 +776,13 @@ void TM1640ShowTime()
 bool TM1640MainFunc(uint8_t fn)
 {
   bool result = false;
-  if(fn != FUNC_DISPLAY_SCROLLDELAY) TM1640Data.scroll = false;
+  if(fn != FUNC_DISPLAY_SCROLLDELAY) TM1640_settings.scroll = false;
   if (XdrvMailbox.data_len > CMD_MAX_LEN)
   {
     Response_P(PSTR("{\"Error\":\"Command text too long. Please limit it to %d characters\"}"), CMD_MAX_LEN);
     return false;
   }
-  AddLog(LOG_LEVEL_INFO, PSTR("DSP: %s bool TM1640MainFunc(uint8_t fn) : %d"), TM1640Data.model_name, fn);
+  AddLog(LOG_LEVEL_INFO, PSTR("DSP: %s bool TM1640MainFunc(uint8_t fn) : %d"), TM1640_settings.model_name, fn);
   switch (fn)
   {
   case FUNC_DISPLAY_CLEAR:
@@ -809,9 +802,6 @@ bool TM1640MainFunc(uint8_t fn)
     break;
   case FUNC_DISPLAY_RAW:
     result = CmndTM1640Raw();
-    break;
-  case FUNC_DISPLAY_DOTS:
-    result = CmndTM1640Dots();
     break;
   case FUNC_DISPLAY_SEVENSEG_TEXT:
     result = CmndTM1640Text(true);
@@ -839,9 +829,9 @@ void TM1640Dim(void)
 {
   // GetDisplayDimmer16() = 0 - 15
   uint8_t brightness = GetDisplayDimmer16() >> 1; // 0 - 7
-  AddLog(LOG_LEVEL_INFO, PSTR("DSP: %s void TM1640Dim(void) : %d"), TM1640Data.model_name, brightness);
+  AddLog(LOG_LEVEL_INFO, PSTR("DSP: %s void TM1640Dim(void) : %d"), TM1640_settings.model_name, brightness);
 
-  if (TM1640 == TM1640Data.display_type)
+  if (TM1640 == TM1640_settings.matrix_type)
   {
     tm1640display->intensity = brightness; // 0 - 7
     tm1640display->writeDisplay();
@@ -953,7 +943,7 @@ void TM1640Refresh(void)
 { // Every second
   if (!disp_power || !Settings->display_mode)
   {
-    AddLog(LOG_LEVEL_INFO, PSTR("DSP: %s Every Second"), TM1640Data.model_name);
+    AddLog(LOG_LEVEL_INFO, PSTR("DSP: %s Every Second"), TM1640_settings.model_name);
     return;
   } // Mode 0 is User text
 
@@ -999,20 +989,20 @@ bool Xdsp32(uint32_t function)
   if (FUNC_DISPLAY_INIT_DRIVER == function)
   {
     TM1640Init();
-    AddLog(LOG_LEVEL_INFO, PSTR("DSP: %s bool Xdsp32(uint32_t function) : %s"), TM1640Data.model_name, "TM1640Init done");
+    AddLog(LOG_LEVEL_INFO, PSTR("DSP: %s bool Xdsp32(uint32_t function) : %s"), TM1640_settings.model_name, "TM1640Init done");
   }
-  else if (TM1640Data.init_done && (XDSP_32 == Settings->display_model))
+  else if (TM1640_settings.init_done && (XDSP_32 == Settings->display_model))
   {
     switch (function)
     {
     case FUNC_DISPLAY_EVERY_50_MSECOND:
       if (disp_power && !Settings->display_mode)
       {
-        if (TM1640Data.scroll)
+        if (TM1640_settings.scroll)
         {
           TM1640ScrollText();
         }
-        if (TM1640Data.show_clock)
+        if (TM1640_settings.show_clock)
         {
           TM1640ShowTime();
         }
@@ -1033,29 +1023,28 @@ bool Xdsp32(uint32_t function)
     case FUNC_DISPLAY_NUMBERNC:
     case FUNC_DISPLAY_FLOATNC:
     case FUNC_DISPLAY_RAW:
-    case FUNC_DISPLAY_DOTS:
     case FUNC_DISPLAY_LEVEL:
     case FUNC_DISPLAY_SEVENSEG_TEXTNC:
     case FUNC_DISPLAY_SCROLLTEXT:
     case FUNC_DISPLAY_SCROLLDELAY:
     case FUNC_DISPLAY_CLOCK:
-      AddLog(LOG_LEVEL_INFO, PSTR("DSP: %s FUNC_DISPLAY_CLOCK : %d"), TM1640Data.model_name, FUNC_DISPLAY_CLOCK);
+      AddLog(LOG_LEVEL_INFO, PSTR("DSP: %s FUNC_DISPLAY_CLOCK : %d"), TM1640_settings.model_name, FUNC_DISPLAY_CLOCK);
       if (disp_power && !Settings->display_mode)
       {
-        TM1640Data.show_clock = false;
+        TM1640_settings.show_clock = false;
         result = TM1640MainFunc(function);
       }
       break;
     case FUNC_DISPLAY_DIM:
-      AddLog(LOG_LEVEL_INFO, PSTR("DSP: %s FUNC_DISPLAY_DIM : %d"), TM1640Data.model_name, FUNC_DISPLAY_DIM);
+      AddLog(LOG_LEVEL_INFO, PSTR("DSP: %s FUNC_DISPLAY_DIM : %d"), TM1640_settings.model_name, FUNC_DISPLAY_DIM);
       TM1640Dim();
       break;
     case FUNC_DISPLAY_POWER:
-      AddLog(LOG_LEVEL_INFO, PSTR("DSP: %s FUNC_DISPLAY_POWER : %d"), TM1640Data.model_name, FUNC_DISPLAY_POWER);
+      AddLog(LOG_LEVEL_INFO, PSTR("DSP: %s FUNC_DISPLAY_POWER : %d"), TM1640_settings.model_name, FUNC_DISPLAY_POWER);
       if (!disp_power)
       {
         TM1640ClearDisplay();
-        AddLog(LOG_LEVEL_INFO, PSTR("DSP: %s bool Xdsp32(uint32_t function) : %s"), TM1640Data.model_name, "after TM1640ClearDisplay()");
+        AddLog(LOG_LEVEL_INFO, PSTR("DSP: %s bool Xdsp32(uint32_t function) : %s"), TM1640_settings.model_name, "after TM1640ClearDisplay()");
       }
       break;
     }
