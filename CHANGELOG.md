@@ -3,19 +3,41 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - Development
 
-## [13.0.0.4]
+## [13.1.0.1]
 ### Added
-- ESP32 prepare for Arduino Core v3 and esp-idf v5 (#19264)
+- Commands to allow setting of timeprop parameters (#19310)
+- Variables ``%power<1..28>%`` and  ``%switch<1..28>%`` to rules (#19331)
+- Experimental support for ESP32-C2 and ESP32-C6 using Arduino core v3.0 
 
 ### Breaking Changed
 
 ### Changed
-- Console height from default 318 pixels to viewport (#19241)
-- Shutter button hold behaviour with grouptopic (#19263)
+- Display invert setting after tasmota start in uDisplay driver (#19337)
 
 ### Fixed
+- Shutter invert (#19341, #19374)
+- Teleinfo power (#19381)
+- Exception 3 in IRHVAC (#19389)
 
 ### Removed
+
+
+## [Released] - Development
+
+## [13.1.0] 20230815
+- Release Quentin
+
+## [13.0.0.4] 20230815
+### Added
+- ESP32 prepare for Arduino Core v3 and esp-idf v5 (#19264)
+
+### Changed
+- Console height from default 318 pixels to viewport (#19241)
+- Shutter button hold behaviour with grouptopic (#19263)
+- Thermostat improvements (#19279)
+- PID controller improvements (#19285)
+- HDC1080 detect device offline (#19298)
+- ADE7953 lowered no load threshold (#19302)
 
 ## [13.0.0.3] 20230805
 ### Added
@@ -88,8 +110,6 @@ All notable changes to this project will be documented in this file.
 
 ### Removed
 - Support for ESP32-C3 with chip rev below 3 (old development boards)
-
-## [Released]
 
 ## [13.0.0] 20230626
 - Release Qasim
