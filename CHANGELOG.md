@@ -3,13 +3,31 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - Development
 
-## [13.1.0.1]
+## [13.1.0.2]
+### Added
+- Support for HDMI CEC protocol (#19434)
+
+### Breaking Changed
+
+### Changed
+- Berry fast_loop is now called every 5ms whatever the Sleep value
+- Reduce IRAM consumption of HDMI CEC to 1453 bytes
+- `Sendmail` upgraded to ESP-Mail-Client v3.4.9 from v1.2.0, using BearSSL instead of MbedTLS
+
+### Fixed
+- PCF8574 mode 1 with base relays exception 3/28 regression from v12.4.0.4 (#19408)
+- Berry make mdns compatible with non-IPv6 builds
+- ESP32 Shutter migration (#19454)
+- ESP32 Shutter multi press button events (#19465)
+- Support for IPv6 link-local zones for esp-idf 5.1 (necessary for Matter)
+
+### Removed
+
+## [13.1.0.1] 20230831
 ### Added
 - Commands to allow setting of timeprop parameters (#19310)
 - Variables ``%power<1..28>%`` and  ``%switch<1..28>%`` to rules (#19331)
 - Experimental support for ESP32-C2 and ESP32-C6 using Arduino core v3.0 
-
-### Breaking Changed
 
 ### Changed
 - Display invert setting after tasmota start in uDisplay driver (#19337)
@@ -18,9 +36,6 @@ All notable changes to this project will be documented in this file.
 - Shutter invert (#19341, #19374)
 - Teleinfo power (#19381)
 - Exception 3 in IRHVAC (#19389)
-
-### Removed
-
 
 ## [Released] - Development
 
