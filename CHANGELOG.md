@@ -7,12 +7,16 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Support for Shelly PlusPMMini, Plus1Mini and Plus1PMMini
 - Matter support for Virtual Devices controllable via Rules or Berry (#19520)
+- Berry read and write Counters (#19558)
 
 ### Breaking Changed
 
 ### Changed
+- ESP32 Framework (Arduino Core) from v2.0.12 to v2.0.13
+- ESP32 LVGL library from v8.3.9 to v8.3.10 (no functional change)
 
 ### Fixed
+- ESP32 DS18x20 driver support extended over GPIO33
 
 ### Removed
 
@@ -35,7 +39,6 @@ All notable changes to this project will be documented in this file.
 - ESP32 Shutter multi press button events (#19465)
 - Support for IPv6 link-local zones for esp-idf 5.1 (necessary for Matter)
 - ESP32C3 relay click on restart
-
 
 ## [13.1.0.1] 20230831
 ### Added
