@@ -1149,11 +1149,14 @@ void WifiDisable(void) {
   TasmotaGlobal.global_state.wifi_down = 1;
 }
 
-void EspRestart(void)
-{
+void EspRestart(void) {
   ResetPwm();
   WifiShutdown(true);
   CrashDumpClear();           // Clear the stack dump in RTC
+
+#ifdef CONFIG_IDF_TARGET_ESP32C3
+  GpioForceHoldRelay();       // Retain the state when the chip or system is reset, for example, when watchdog time-out or Deep-sleep
+#endif  // CONFIG_IDF_TARGET_ESP32C3
 
   if (TasmotaGlobal.restart_halt) {  // Restart 2
     while (1) {
@@ -1165,7 +1168,12 @@ void EspRestart(void)
     }
   }
   else if (TasmotaGlobal.restart_deepsleep) {  // Restart 9
+  #ifdef USE_DEEPSLEEP
+    DeepSleepStart();
+    // should never come to this line....
+  #endif
     ESP.deepSleep(0);         // Deep sleep mode with only hardware triggered wake up
+
   }
   else {
     ESP_Restart();

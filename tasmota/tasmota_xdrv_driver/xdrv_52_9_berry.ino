@@ -761,6 +761,7 @@ void HandleBerryConsole(void)
   WSContentStop();
 }
 
+#ifdef USE_BERRY_PARTITION_WIZARD
 // Display a Button to dynamically load the Partition Wizard
 void HandleBerryPartiionWizardLoaderButton(void) {
   bvm * vm = berry.vm;
@@ -785,6 +786,7 @@ void HandleBerryPartitionWizardLoader(void) {
     Webserver->send(302, "text/plain", "");
   }
 }
+#endif //USE_BERRY_PARTITION_WIZARD
 
 // return true if successful
 bool BerryBECLoader(const char * url) {
@@ -903,9 +905,6 @@ bool Xdrv52(uint32_t function)
       break;
     case FUNC_EVERY_100_MSECOND:
       callBerryEventDispatcher(PSTR("every_100ms"), nullptr, 0, nullptr);
-      break;
-    case FUNC_EVERY_200_MSECOND:
-      callBerryEventDispatcher(PSTR("every_200ms"), nullptr, 0, nullptr);
       break;
     case FUNC_EVERY_250_MSECOND:
       callBerryEventDispatcher(PSTR("every_250ms"), nullptr, 0, nullptr);

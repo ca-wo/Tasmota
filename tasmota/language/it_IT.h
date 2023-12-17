@@ -28,7 +28,7 @@
  * Use online command StateText to translate ON, OFF, HOLD and TOGGLE.
  * Use online command Prefix to translate cmnd, stat and tele.
  *
- * Updated until v9.4.0.1 - Last update 15.10.2023
+ * Updated until v9.4.0.1 - Last update 18.11.2023
 \*********************************************************************/
 
 #define LANGUAGE_MODULE_NAME         // Enable to display "Module Generic" (ie Spanish), Disable to display "Generic Module" (ie English)
@@ -166,7 +166,6 @@
 #define D_RESTART              "Riavvia"
 #define D_RESTARTING           "Riavvio"
 #define D_RESTART_REASON       "Causa riavvio"
-#define D_RESTORE              "ripristino"
 #define D_RETAINED             "salvato"
 #define D_RULE                 "Regola"
 #define D_SAVE                 "Salva"
@@ -192,7 +191,6 @@
 #define D_TWILIGHT_ASTRONOMICAL "astronomico"
 #define D_TWILIGHT_CIVIL       "civile"
 #define D_TWILIGHT_NAUTICAL    "nautico"
-#define D_UPGRADE              "aggiornamento"
 #define D_UPLOAD               "Caricamento"
 #define D_UPTIME               "Tempo accensione"
 #define D_USED                 "usati"
@@ -290,6 +288,7 @@
 #define D_RESET_CONFIGURATION          "Impostazioni predefinite"
 #define D_BACKUP_CONFIGURATION         "Salva impostazioni"
 #define D_RESTORE_CONFIGURATION        "Carica impostazioni"
+#define D_START_RESTORE                "Avvia ripristino"
 #define D_MAIN_MENU                    "Menu principale"
 
 #define D_MODULE_PARAMETERS  "Parametri modulo"
@@ -548,20 +547,20 @@
 #define D_DEVICE_OUTPUT       "Uscita"
 
 // xdrv_39_thermostat.ino
-#define D_THERMOSTAT                  "Thermostat"
-#define D_THERMOSTAT_SET_POINT        "Set Point Temperature"
-#define D_THERMOSTAT_SENSOR           "Current Temperature"
-#define D_THERMOSTAT_GRADIENT         "Gradient Temperature"
-#define D_THERMOSTAT_DUTY_CYCLE       "Duty cycle"
-#define D_THERMOSTAT_CYCLE_TIME       "Cycle time"
-#define D_THERMOSTAT_PI_AUTOTUNE      "PI Auto tuning"
-#define D_THERMOSTAT_CONTROL_METHOD   "Control method"
-#define D_THERMOSTAT_RAMP_UP          "Ramp up"
+#define D_THERMOSTAT                  "Termostato"
+#define D_THERMOSTAT_SET_POINT        "Temperatura impostata"
+#define D_THERMOSTAT_SENSOR           "Temperatura attuale"
+#define D_THERMOSTAT_GRADIENT         "Gradiente temperatura"
+#define D_THERMOSTAT_DUTY_CYCLE       "Ciclo lavoro"
+#define D_THERMOSTAT_CYCLE_TIME       "Tempo ciclo"
+#define D_THERMOSTAT_PI_AUTOTUNE      "Regolazione automatica  PI"
+#define D_THERMOSTAT_CONTROL_METHOD   "Metodo controllo"
+#define D_THERMOSTAT_RAMP_UP          "Rampa"
 #define D_THERMOSTAT_PI               "PI"
-#define D_THERMOSTAT_AUTOTUNE         "Autotune"
-#define D_THERMOSTAT_RAMP_UP_HYBRID   "Ramp up (Hybrid)"
-#define D_THERMOSTAT_PI_HYBRID        "PI (Hybrid)"
-#define D_THERMOSTAT_AUTOTUNE_HYBRID  "Autotune (Hybrid)"
+#define D_THERMOSTAT_AUTOTUNE         "Regolazione automatica"
+#define D_THERMOSTAT_RAMP_UP_HYBRID   "Rampa (ibrida)"
+#define D_THERMOSTAT_PI_HYBRID        "PI (ibdrida)"
+#define D_THERMOSTAT_AUTOTUNE_HYBRID  "Regolazione automatica (ibrida)"
 
 // xsns_05_ds18b20.ino
 #define D_SENSOR_BUSY       "Sensore occupato"
@@ -957,7 +956,8 @@
 #define D_SENSOR_BIOPDU_PZEM0XX_TX      "BioPDU PZEM0XX - TX"
 #define D_SENSOR_BIOPDU_PZEM016_RX      "BioPDU PZEM016 - RX"
 #define D_SENSOR_BIOPDU_BIT             "BioPDU Bit"
-#define D_SENSOR_LOX_O2_RX              "LoxO2 - RX"
+#define D_SENSOR_LOX_O2_RX     "LoxO2 RX"
+#define D_GPIO_MAGIC_SWITCH "MagicSwitch"
 #define D_SENSOR_TM1640_CLK    "TM1640 CLK"
 #define D_SENSOR_TM1640_DIO    "TM1640 DIO"
 
@@ -1222,6 +1222,7 @@
 
 // xsns_106_gdk101.ino
 #define D_AVG_RAD_DOSE                    "Dose media radiazioni"
+#define D_AVG_RAD_DOSE                    "Radiazioni"
 #define D_UNIT_US_H                       "µSv/h"
 
 #endif  // _LANGUAGE_IT_IT_H_
