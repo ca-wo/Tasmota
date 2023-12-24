@@ -2129,7 +2129,7 @@ void TuyaProcessCommand(unsigned char *buffer){
     }
 */
     for (uint8_t cmdsID = 0; cmdsID < sizeof(TuyaExcludeCMDsFromMQTT); cmdsID++) {
-      if (pgm_read_byte(TuyaExcludeCMDsFromMQTT +cmdsID) == Tuya.buffer[3]) {
+      if (pgm_read_byte(TuyaExcludeCMDsFromMQTT +cmdsID) == cmd) {
         isCmdToSuppress = true;
         break;
       }
@@ -2432,7 +2432,7 @@ void TuyaAddButton(void) {
     char stemp[33];
     snprintf_P(stemp, sizeof(stemp), PSTR("" D_JSON_IRHVAC_MODE ""));
     WSContentSend_P(HTTP_DEVICE_CONTROL, 26, TasmotaGlobal.devices_present + 1,
-      (strlen(GetWebButton(TasmotaGlobal.devices_present))) ? GetWebButton(TasmotaGlobal.devices_present) : stemp, "");
+      (strlen(GetWebButton(TasmotaGlobal.devices_present))) ? HtmlEscape(GetWebButton(TasmotaGlobal.devices_present)).c_str() : stemp, "");
     WSContentSend_P(PSTR("</tr></table>"));
   }
 }
