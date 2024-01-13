@@ -57,6 +57,7 @@
 #define D_AP "AP"                    // Access Point
 #define D_AS "as"
 #define D_AUTO "OTOMATIK"
+#define D_BATTERY "Battery"
 #define D_BATT "Batt"                // Short for Battery
 #define D_BATTERY_CHARGE "Charge"   // Battery charge in %
 #define D_BLINK "Blink"
@@ -274,7 +275,8 @@
 #define D_CONFIGURATION "Konfigürasyon"
 #define D_INFORMATION "Bilgi"
 #define D_FIRMWARE_UPGRADE "Cihaz yazılımını Güncelle"
-#define D_MANAGEMENT "Consoles"
+#define D_MANAGEMENT "Tools"
+#define D_GPIO_VIEWER "GPIO Viewer"
 #define D_CONSOLE "Konsol"
 #define D_CONFIRM_RESTART "Yeniden Başlatmayı Onayla"
 
@@ -1223,5 +1225,9 @@
 // xsns_106_gdk101.ino
 #define D_AVG_RAD_DOSE                    "ortalama radyasyon dozu"
 #define D_UNIT_US_H                       "µSv/h"
+
+// ixrv92_pipsolar.ino
+#define D_SENSOR_PIPSOLAR_TX             "Pipsolar TX"
+#define D_SENSOR_PIPSOLAR_RX             "Pipsolar RX"
 
 #endif  // _LANGUAGE_TR_TR_H_

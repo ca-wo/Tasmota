@@ -57,6 +57,7 @@
 #define D_AP "Точка за достъп"       // Access Point
 #define D_AS "като"
 #define D_AUTO "АВТОМАТИЧНО"
+#define D_BATTERY "Battery"
 #define D_BATT "Бат."                // Short for Battery
 #define D_BATTERY_CHARGE "Charge"   // Battery charge in %
 #define D_BLINK "Мигане вкл."
@@ -275,6 +276,7 @@
 #define D_INFORMATION "Информация"
 #define D_FIRMWARE_UPGRADE "Обновяване на софтуера"
 #define D_MANAGEMENT "Терминали"
+#define D_GPIO_VIEWER "GPIO Viewer"
 #define D_CONSOLE "Терминал"
 #define D_CONFIRM_RESTART "Потвърдете рестартиране"
 
@@ -1223,5 +1225,9 @@
 // xsns_106_gdk101.ino
 #define D_AVG_RAD_DOSE                    "средна доза радиация"
 #define D_UNIT_US_H                       "µSv/h"
+
+// ixrv92_pipsolar.ino
+#define D_SENSOR_PIPSOLAR_TX             "Pipsolar TX"
+#define D_SENSOR_PIPSOLAR_RX             "Pipsolar RX"
 
 #endif  // _LANGUAGE_BG_BG_H_

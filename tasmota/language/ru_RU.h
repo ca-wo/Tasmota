@@ -58,6 +58,7 @@
 #define D_AP "AP"                    // Access Point
 #define D_AS "как"
 #define D_AUTO "АВТО"
+#define D_BATTERY "Battery"
 #define D_BATT "Batt"                // Short for Battery
 #define D_BATTERY_CHARGE "Charge"   // Battery charge in %
 #define D_BLINK "Мигать"
@@ -276,6 +277,7 @@
 #define D_INFORMATION "Информация"
 #define D_FIRMWARE_UPGRADE "Обновление прошивки"
 #define D_MANAGEMENT "Управление"
+#define D_GPIO_VIEWER "GPIO Viewer"
 #define D_CONSOLE "Консоль"
 #define D_CONFIRM_RESTART "Перезагрузить устройство?"
 
@@ -1224,5 +1226,9 @@
 // xsns_106_gdk101.ino
 #define D_AVG_RAD_DOSE                    "средняя доза облучения"
 #define D_UNIT_US_H                       "µSv/h"
+
+// ixrv92_pipsolar.ino
+#define D_SENSOR_PIPSOLAR_TX             "Pipsolar TX"
+#define D_SENSOR_PIPSOLAR_RX             "Pipsolar RX"
 
 #endif  // _LANGUAGE_RU_RU_H_

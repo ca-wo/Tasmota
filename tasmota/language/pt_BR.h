@@ -57,6 +57,7 @@
 #define D_AP "Ponto de acesso"     	// Ponto de Acesso
 #define D_AS "como"
 #define D_AUTO "Auto"
+#define D_BATTERY "Battery"
 #define D_BATT "Bat"                // Short for Battery
 #define D_BATTERY_CHARGE "Charge"  // Battery charge in %
 #define D_BLINK "Piscar"
@@ -274,7 +275,8 @@
 #define D_CONFIGURATION "Configuração"
 #define D_INFORMATION "Informação"
 #define D_FIRMWARE_UPGRADE "Atualização de firmware"
-#define D_MANAGEMENT "Consoles"
+#define D_MANAGEMENT "Tools"
+#define D_GPIO_VIEWER "GPIO Viewer"
 #define D_CONSOLE "Console"
 #define D_CONFIRM_RESTART "Confirmar o reinicio"
 
@@ -1223,5 +1225,9 @@
 // xsns_106_gdk101.ino
 #define D_AVG_RAD_DOSE                    "dose média de radiação"
 #define D_UNIT_US_H                       "µSv/h"
+
+// ixrv92_pipsolar.ino
+#define D_SENSOR_PIPSOLAR_TX             "Pipsolar TX"
+#define D_SENSOR_PIPSOLAR_RX             "Pipsolar RX"
 
 #endif  // _LANGUAGE_PT_BR_H_

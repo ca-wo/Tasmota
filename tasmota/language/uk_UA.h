@@ -57,6 +57,7 @@
 #define D_AP "Точка доступу"        // Access Point
 #define D_AS "як"
 #define D_AUTO "АВТО"
+#define D_BATTERY "Battery"
 #define D_BATT "Batt"                // Short for Battery
 #define D_BATTERY_CHARGE "Charge"   // Battery charge in %
 #define D_BLINK "Блимати"
@@ -274,7 +275,8 @@
 #define D_CONFIGURATION "Конфігурація"
 #define D_INFORMATION "Інформація"
 #define D_FIRMWARE_UPGRADE "Оновлення прошивки"
-#define D_MANAGEMENT "Consoles"
+#define D_MANAGEMENT "Tools"
+#define D_GPIO_VIEWER "GPIO Viewer"
 #define D_CONSOLE "Консоль"
 #define D_CONFIRM_RESTART "Підтвердити перезавантаження"
 
@@ -1223,5 +1225,9 @@
 // xsns_106_gdk101.ino
 #define D_AVG_RAD_DOSE                    "середня доза радіації"
 #define D_UNIT_US_H                       "µSv/h"
+
+// ixrv92_pipsolar.ino
+#define D_SENSOR_PIPSOLAR_TX             "Pipsolar TX"
+#define D_SENSOR_PIPSOLAR_RX             "Pipsolar RX"
 
 #endif // _LANGUAGE_UK_UA_H_

@@ -1735,7 +1735,7 @@ void ZigbeeGlowPermitJoinLight(void) {
       analogWritePhase(led_pin, led_power, 0);
     }
 #else
-    analogWrite(led_pin, TasmotaGlobal.ledlnk_inverted ? 1023 - led_power : led_power);
+    AnalogWrite(led_pin, TasmotaGlobal.ledlnk_inverted ? 1023 - led_power : led_power);
 #endif
   }
 }
@@ -2335,8 +2335,11 @@ void ZigbeeShow(bool json)
               WSContentSend_P(PSTR(" &#128261; %d%%"), changeUIntScale(light.getDimmer(),0,254,0,100));
             }
             if (light.validCT() && ((channels == 2) || (channels == 5))) {
-              uint32_t ct_k = (((1000000 / light.getCT()) + 25) / 50) * 50;
-              WSContentSend_P(msg[ZB_WEB_LIGHT_CT], light.getCT(), ct_k);
+              uint16_t ct = light.getCT();
+              if (ct != 0) {        // ct == 0 means undefined value
+                uint32_t ct_k = (((1000000 / ct) + 25) / 50) * 50;
+                WSContentSend_P(msg[ZB_WEB_LIGHT_CT], light.getCT(), ct_k);
+              }
             }
             if (light.validHue() && light.validSat() && (channels >= 3)) {
               uint8_t r,g,b;
