@@ -275,7 +275,7 @@
 #define D_CONFIGURATION "Einstellungen"
 #define D_INFORMATION "Informationen"
 #define D_FIRMWARE_UPGRADE "Firmware Update"
-#define D_MANAGEMENT "Konsolen"
+#define D_MANAGEMENT "Werkzeuge"
 #define D_GPIO_VIEWER "GPIO Viewer"
 #define D_CONSOLE "Konsole"
 #define D_CONFIRM_RESTART "Wirklich neustarten?"
@@ -548,7 +548,7 @@
 #define D_DEVICE_INPUT "Eingang"
 #define D_DEVICE_OUTPUT "Ausgang"
 
-// xdrv_39_thermostat.ino
+// xdrv_39_thermostat.ino, xdrv_85_esp32_ble_eq3_trv.ino
 #define D_THERMOSTAT                  "Thermostat"
 #define D_THERMOSTAT_SET_POINT        "Solltemperatur"
 #define D_THERMOSTAT_SENSOR           "Aktuelle Temperatur"
