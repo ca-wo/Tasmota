@@ -24,6 +24,9 @@ lv_opa = ct.u8
 lv_blend_mode = ct.u8
 lv_align = ct.u8
 lv_bidi_dir = ct.u8
+lv_base_dir = ct.u8
+lv_text_align = ct.u8
+lv_text_flag = ct.u8
 lv_txt_flag = ct.u8
 lv_text_decor = ct.u8
 lv_font = ct.u32
@@ -93,8 +96,16 @@ lv_gradient_stop = ct.structure(lv_gradient_stop, "lv_gradient_stop")
 #                                                         * Any of LV_GRAD_DIR_HOR, LV_GRAD_DIR_VER, LV_GRAD_DIR_NONE */
 # } lv_grad_dsc_t;
 lv_grad_dsc = [            # valid LVGL9
-    [lv_gradient_stop, "stops_0"],
-    [lv_gradient_stop, "stops_1"],
+    # since it's an array and not two structures, we need to explicitly unroll it here or the alignment is wrong
+    # [lv_gradient_stop, "stops_0"],
+    [lv_color, "stops_0_color"],
+    [lv_opa, "stops_0_opa"],
+    [uint8_t, "stops_0_frac"],
+    # [lv_gradient_stop, "stops_1"],
+    [lv_color, "stops_1_color"],
+    [lv_opa, "stops_1_opa"],
+    [uint8_t, "stops_1_frac"],
+    
     [uint8_t, "stops_count"],
     [uint8_t_3, "dir"],
 ]
@@ -331,6 +342,55 @@ lv_draw_image_dsc = [            # valid LVGL9
     [ptr, "sup"],
 ]
 lv_draw_image_dsc = ct.structure(lv_draw_image_dsc, "lv_draw_image_dsc")
+
+# typedef struct {
+#     lv_draw_dsc_base_t base;
+#     const char * text;
+#     const lv_font_t * font;
+#     uint32_t sel_start;
+#     uint32_t sel_end;
+#     lv_color_t color;
+#     lv_color_t sel_color;
+#     lv_color_t sel_bg_color;
+#     int32_t line_space;
+#     int32_t letter_space;
+#     int32_t ofs_x;
+#     int32_t ofs_y;
+#     lv_opa_t opa;
+#     lv_base_dir_t bidi_dir;
+#     lv_text_align_t align;
+#     lv_text_flag_t flag;
+#     lv_text_decor_t decor : 3;
+#     lv_blend_mode_t blend_mode : 3;
+#     /**
+#      * < 1: malloc buffer and copy `text` there.
+#      * 0: `text` is const and it's pointer will be valid during rendering.*/
+#     uint8_t text_local : 1;
+#     lv_draw_label_hint_t * hint;
+# } lv_draw_label_dsc_t;
+lv_draw_label_dsc = [            # valid LVGL9
+    [lv_draw_dsc_base, "base"],
+    [ptr, "text"],
+    [ptr, "font"],
+    [uint32_t, "sel_start"],
+    [uint32_t, "sel_end"],
+    [lv_color, "color"],
+    [lv_color, "sel_color"],
+    [lv_color, "sel_bg_color"],
+    [int32_t, "line_space"],
+    [int32_t, "letter_space"],
+    [int32_t, "ofs_x"],
+    [int32_t, "ofs_y"],
+    [lv_opa, "opa"],
+    [lv_base_dir, "bidi_dir"],
+    [lv_text_align, "align"],
+    [lv_text_flag, "flag"],
+    [uint8_t_3, "decor"],
+    [uint8_t_3, "blend_mode"],
+    [uint8_t_1, "text_local"],
+    [ptr, "hint"],
+]
+lv_draw_label_dsc = ct.structure(lv_draw_label_dsc, "lv_draw_label_dsc")
 
 # lv_obj_draw_part_dsc = [            # valid LVGL8.3
 #     [ptr, "draw_ctx"],

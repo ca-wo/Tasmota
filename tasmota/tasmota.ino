@@ -225,7 +225,9 @@ bool tasconsole_serial = false;
 
 #if ARDUINO_USB_MODE
 //#warning **** TasConsole ARDUINO_USB_MODE ****
-//HWCDC HWCDCSerial;                        // Already defined in HWCDC.cpp
+#if (ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(5,1,3))
+HWCDC HWCDCSerial;
+#endif
 TASCONSOLE TasConsole{HWCDCSerial};         // ESP32C3/C6/S3 embedded USB using JTAG interface
 //#warning **** TasConsole uses HWCDC ****
 #else   // No ARDUINO_USB_MODE
@@ -399,7 +401,6 @@ struct TasmotaGlobal_t {
   uint8_t module_type;                      // Current copy of Settings->module or user template type
   uint8_t emulated_module_type;             // Emulated module type as requested by ESP32
   uint8_t last_source;                      // Last command source
-  uint8_t last_command_source;              // Last command source
   uint8_t shutters_present;                 // Number of actual define shutters
   uint8_t discovery_counter;                // Delayed discovery counter
   uint8_t power_on_delay;                   // Delay relay power on to reduce power surge (SetOption47)

@@ -34,6 +34,9 @@
 #include "be_mapping.h"
 #include "be_ctypes.h"
 #include "lv_berry.h"
+#ifdef USE_LVGL_HASPMOTA
+  #include "be_lv_haspmota.h"
+#endif // USE_LVGL_HASPMOTA
 
 // Berry easy logging
 extern "C" {
@@ -182,6 +185,9 @@ extern "C" {
   #if LV_FONT_MONTSERRAT_10
     { 10, &lv_font_montserrat_10 },
   #endif
+  #if LV_FONT_MONTSERRAT_TASMOTA_10
+    { 10, &lv_font_montserrat_tasmota_10 },
+  #endif
   #if LV_FONT_MONTSERRAT_12
     { 12, &lv_font_montserrat_12 },
   #endif
@@ -281,6 +287,12 @@ extern "C" {
   // icons Font for sizes not covered by montserrat
   // if montserrat is defined, use it, else import icons font
   const lv_font_table_t lv_icons_fonts[] = {
+#ifdef LV_FONT_MONTSERRAT_TASMOTA_10
+    { 10, &lv_font_montserrat_tasmota_10 },
+#elif defined(FONT_ICONS_10)
+    { 10, &lv_font_icons_10 },
+#endif
+
 #ifdef LV_FONT_MONTSERRAT_TASMOTA_12
     { 12, &lv_font_montserrat_tasmota_12 },
 #elif defined(FONT_ICONS_12)
