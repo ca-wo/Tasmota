@@ -92,6 +92,7 @@ const uint8_t MAX_IRSEND = 16;              // Max number of IRSEND GPIOs
 const uint8_t MAX_RULE_SETS = 3;            // Max number of rule sets of size 512 characters
 const uint16_t MAX_RULE_SIZE = 512;         // Max number of characters in rules
 const uint16_t VL53LXX_MAX_SENSORS = 8;     // Max number of VL53L0X sensors
+const uint8_t MAX_SR04 = 3; // Max number of SR04 ultrasonic sensors
 
 #ifdef ESP32
 const uint8_t MAX_I2C = 2;                  // Max number of I2C controllers (ESP32 = 2)
@@ -125,8 +126,6 @@ const uint8_t MAX_FRIENDLYNAMES = 8;        // Max number of Friendly names
 const uint8_t MAX_BUTTON_TEXT = 32;         // Max number of GUI button labels
 const uint8_t MAX_GROUP_TOPICS = 4;         // Max number of Group Topics
 const uint8_t MAX_DEV_GROUP_NAMES = 4;      // Max number of Device Group names
-
-const static char kWifiPhyMode[] PROGMEM = " bgnl"; // Wi-Fi Modes
 
 #ifdef ESP8266
 const uint8_t MAX_ADCS = 1;                 // Max number of ESP8266 ADC pins
