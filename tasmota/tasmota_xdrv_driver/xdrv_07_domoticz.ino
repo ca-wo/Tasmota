@@ -110,8 +110,20 @@ int DomoticzRssiQuality(void) {
 }
 
 uint32_t DomoticzRelayIdx(uint32_t relay) {
+  if (relay >= MAX_RELAYS_SET) { return 0; }
   return (relay < MAX_DOMOTICZ_IDX) ? Settings->domoticz_relay_idx[relay] : Domoticz->relay_idx[relay -MAX_DOMOTICZ_IDX];
 }
+
+void DomoticzSetRelayIdx(uint32_t relay, uint32_t idx) {
+  if (relay >= MAX_RELAYS_SET) { return; }
+  if (relay < MAX_DOMOTICZ_IDX) {
+    Settings->domoticz_relay_idx[relay] = idx;
+  } else {
+    Domoticz->relay_idx[relay -MAX_DOMOTICZ_IDX] = idx;
+  }
+}
+
+/*********************************************************************************************/
 
 #ifdef USE_SONOFF_IFAN
 void MqttPublishDomoticzFanState(void) {
@@ -128,10 +140,12 @@ void MqttPublishDomoticzFanState(void) {
 }
 
 void DomoticzUpdateFanState(void) {
-  if (Domoticz->update_flag) {
-    MqttPublishDomoticzFanState();
+  if (Domoticz) {
+    if (Domoticz->update_flag) {
+      MqttPublishDomoticzFanState();
+    }
+    Domoticz->update_flag = true;
   }
-  Domoticz->update_flag = true;
 }
 #endif  // USE_SONOFF_IFAN
 
@@ -166,11 +180,15 @@ void MqttPublishDomoticzPowerState(uint8_t device) {
 }
 
 void DomoticzUpdatePowerState(uint8_t device) {
-  if (Domoticz->update_flag) {
-    MqttPublishDomoticzPowerState(device);
+  if (Domoticz) {
+    if (Domoticz->update_flag) {
+      MqttPublishDomoticzPowerState(device);
+    }
+    Domoticz->update_flag = true;
   }
-  Domoticz->update_flag = true;
 }
+
+/*********************************************************************************************/
 
 void DomoticzMqttUpdate(void) {
   if (Domoticz->subscribe && (Settings->domoticz_update_timer || Domoticz->update_timer)) {
@@ -220,14 +238,13 @@ void DomoticzMqttSubscribe(void) {
   }
 }
 
-int32_t DomoticzIdx2Relay(uint32_t idx) {
-  if (0 == idx) {
-    return -1;  // Idx not mine
-  }
-  uint32_t maxdev = (TasmotaGlobal.devices_present > MAX_RELAYS_SET) ? MAX_RELAYS_SET : TasmotaGlobal.devices_present;
-  for (uint32_t i = 0; i < maxdev; i++) {
-    if (idx == DomoticzRelayIdx(i)) {
-      return i;
+int DomoticzIdx2Relay(uint32_t idx) {
+  if (idx > 0) {
+    uint32_t maxdev = (TasmotaGlobal.devices_present > MAX_RELAYS_SET) ? MAX_RELAYS_SET : TasmotaGlobal.devices_present;
+    for (uint32_t i = 0; i < maxdev; i++) {
+      if (idx == DomoticzRelayIdx(i)) {
+        return i;
+      }
     }
   }
   return -1;  // Idx not mine
@@ -242,6 +259,11 @@ bool DomoticzMqttData(void) {
 */
   Domoticz->update_flag = true;
 
+  if (!Domoticz->subscribe) { 
+    return false;  // No Domoticz driver subscription so try user subscribes
+  }
+
+  // Default subscibed to domoticz/out/#
   if (strncasecmp_P(XdrvMailbox.topic, PSTR(DOMOTICZ_OUT_TOPIC), strlen(DOMOTICZ_OUT_TOPIC)) != 0) {
     return false;  // Process unchanged data
   }
@@ -503,7 +525,6 @@ void DomoticzSensorP1SmartMeter(char *usage1, char *usage2, char *return1, char 
   DomoticzSensor(DZ_P1_SMART_METER, data);
 }
 
-
 /*********************************************************************************************/
 
 void DomoticzInit(void) {
@@ -520,14 +541,17 @@ void DomoticzInit(void) {
 \*********************************************************************************************/
 
 void CmndDomoticzIdx(void) {
+  // DzIdx0 0    - Reset all disabling subscription too
   // DzIdx1 403  - Relate relay1 (=Power1) to Domoticz Idx 403 persistent
   // DzIdx5 403  - Relate relay5 (=Power5) to Domoticz Idx 403 non-persistent (need a rule at boot to become persistent)
-  if ((XdrvMailbox.index > 0) && (XdrvMailbox.index <= MAX_RELAYS_SET)) {
+  if ((XdrvMailbox.index >= 0) && (XdrvMailbox.index <= MAX_RELAYS_SET)) {
     if (XdrvMailbox.payload >= 0) {
-      if (XdrvMailbox.index <= MAX_DOMOTICZ_IDX) {
-        Settings->domoticz_relay_idx[XdrvMailbox.index -1] = XdrvMailbox.payload;
+      if (0 == XdrvMailbox.index) {
+        for (uint32_t i = 0; i < MAX_RELAYS_SET; i++) {
+          DomoticzSetRelayIdx(i, 0);
+        }
       } else {
-        Domoticz->relay_idx[XdrvMailbox.index -MAX_DOMOTICZ_IDX -1] = XdrvMailbox.payload;
+        DomoticzSetRelayIdx(XdrvMailbox.index -1, XdrvMailbox.payload);
       }
       DomoticzMqttSubscribe();
     }
