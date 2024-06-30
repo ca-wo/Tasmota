@@ -3,17 +3,33 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - Development
 
-## [14.1.0.2]
+## [14.1.0.3]
+### Added
+- ESP32 support for power and energy limit checks, like ``MaxEnergy2`` per phase (#21695)
+- Berry `tasmota.rtc("config_time")` (#21698)
+- Berry `math.min()` and `math.max()` (#21705)
+- Berry `FUNC_ANY_KEY` event calling `any_key()` (#21708)
+- Berry `FUNC_BUTTON_MULTI_PRESSED` event and make `FUNC_BUTTON_PRESSED` called only on state changes
+
+### Breaking Changed
+
+### Changed
+- ESP32 support for energy margin checks, like ``MaxPower2`` per phase (#21695)
+
+### Fixed
+
+### Removed
+
+## [14.1.0.2] 20240627
 ### Added
 - Support for Sonoff WTS01 temperature sensor using SerialBridge in ``SSerialMode 3``
 - Berry `classof` extended to class methods (#21615)
 - Extend command ``SetOption147 1`` to disable publish of IRReceived MQTT messages (#21574)
 - Matter support for Rain sensor (#21633)
-- Matter add internal debug option (#21634)
-- Matter add Fan support (virtual only) (#21637)
+- Matter internal debug option (#21634)
+- Matter Fan support (virtual only) (#21637)
 - Matter show event name in logs (#21649)
-
-### Breaking Changed
+- Matter full support of events (#21698)
 
 ### Changed
 - SerialBridge command ``SSerialSend9`` replaced by ``SSerialMode``
@@ -24,6 +40,8 @@ All notable changes to this project will be documented in this file.
 - ESP8266 platform update from 2024.01.01 to 2024.06.00 (#21668)
 - ESP8266 Framework (Arduino Core) from v2.7.6 to v2.7.7 (#21668)
 - Matter refactor reading of multiple attributes to reduce memory pressure (#21675)
+- ESP32 platform update from 2024.06.10 to 2024.06.11 (#21694)
+- ESP32 Framework (Arduino Core) from v3.0.1 to v3.0.2 (#21694)
 
 ### Fixed
 - Matter interverted attributes 0xFFF9 and 0xFFFB (#21636)
@@ -33,8 +51,6 @@ All notable changes to this project will be documented in this file.
 - Matter TLV.U8 unsigned encoding (#21672)
 - Matter resumption final ack (#21673)
 - ESP32 allow use of UART0 with enabled USB_CDC_CONSOLE (#21496)
-
-### Removed
 
 ## [14.1.0.1] 20240611
 ### Added
