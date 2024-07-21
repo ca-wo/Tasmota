@@ -28,7 +28,7 @@
  * Use online command StateText to translate ON, OFF, HOLD and TOGGLE.
  * Use online command Prefix to translate cmnd, stat and tele.
  *
- * Updated until v9.4.0.1 - Last update 15.06.2024
+ * Updated until v9.4.0.1 - Last update 17.07.2024
 \*********************************************************************/
 
 #define LANGUAGE_MODULE_NAME         // Enable to display "Module Generic" (ie Spanish), Disable to display "Generic Module" (ie English)
@@ -998,10 +998,16 @@
 #define D_SENSOR_BIOPDU_PZEM0XX_TX      "BioPDU PZEM0XX - TX"
 #define D_SENSOR_BIOPDU_PZEM016_RX      "BioPDU PZEM016 - RX"
 #define D_SENSOR_BIOPDU_BIT             "BioPDU Bit"
+<<<<<<< HEAD
 #define D_SENSOR_LOX_O2_RX     "LoxO2 RX"
 #define D_GPIO_MAGIC_SWITCH "MagicSwitch"
 #define D_SENSOR_TM1640_CLK    "TM1640 CLK"
 #define D_SENSOR_TM1640_DIO    "TM1640 DIO"
+=======
+#define D_SENSOR_LOX_O2_RX              "LoxO2 - RX"
+#define D_GPIO_MAGIC_SWITCH             "MagicSwitch"
+#define D_SENSOR_WOOLIIS_RX             "Wooliis - RX"
+>>>>>>> 990a0e4257b9d180d1ad70cd8da71ddaef7f91b1
 
 // Units
 #define D_UNIT_AMPERE                     "A"
@@ -1269,7 +1275,13 @@
 #define D_UNIT_US_H                       "µSv/h"
 
 // ixrv92_pipsolar.ino
-#define D_SENSOR_PIPSOLAR_TX             "Pipsolar - TX"
-#define D_SENSOR_PIPSOLAR_RX             "Pipsolar - RX"
+#define D_SENSOR_PIPSOLAR_TX              "Pipsolar - TX"
+#define D_SENSOR_PIPSOLAR_RX              "Pipsolar - RX"
+
+// xsns_115_wooliis.ino
+#define D_IMPORT                          "Importa"
+#define D_EXPORT                          "Esporta"
+#define D_CHARGING                        "In carica"
+#define D_CAPACITY                        "Capacità"
 
 #endif  // _LANGUAGE_IT_IT_H_

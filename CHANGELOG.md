@@ -9,14 +9,29 @@ All notable changes to this project will be documented in this file.
 - Berry `tasmota.rtc("config_time")` (#21698)
 - Berry `math.min()` and `math.max()` (#21705)
 - Berry `FUNC_ANY_KEY` event calling `any_key()` (#21708)
-- Berry `FUNC_BUTTON_MULTI_PRESSED` event and make `FUNC_BUTTON_PRESSED` called only on state changes
+- Berry `FUNC_BUTTON_MULTI_PRESSED` event and make `FUNC_BUTTON_PRESSED` called only on state changes and once per second (#21711)
+- Support for Sonoff POWCT Ring (#21131)
+- NeoPool data validation and communication statistics default enabled for ESP32 only (#21721)
+- `FUNC_BUTTON_PRESSED` now contains `press_counter` encoded in `XdrvMailbox.command_code` (#21724)
+- Berry `int64` added `low32()` and `high32()` methods, used in Matter (#21728)
+- Matter support for 'Generic Switch' based on Tasmota Buttons (#21731)
+- Berry cam module and img class (#21743)
+- Skip MQTT response if command is prefixed with underscore (#21740)
+- Skip MQTT response if commands are executed prefixed with ``Backlog2`` (no delay) or ``Backlog3`` (#21740)
+- Support for Wooliis Hall Effect Coulometer or Battery capacity monitor (#21732)
 
 ### Breaking Changed
 
 ### Changed
 - ESP32 support for energy margin checks, like ``MaxPower2`` per phase (#21695)
+- ESP32 TM1621 number overflow from "9999" to "12E3" (#21131)
+- ESP32 platform update from 2024.06.11 to 2024.07.10 (#21745)
+- ESP32 platform update from 2024.07.10 to 2024.07.11 (#21765)
 
 ### Fixed
+- Berry `bytes.resize()` for large sizes (#21716)
+- On universal display remove default backlight power if a single PWM channel is used for backlight. Regression from 14.0.0.1 (#21726)
+- ESP32 I2S fixes (#21770)
 
 ### Removed
 
