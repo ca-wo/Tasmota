@@ -1002,14 +1002,10 @@
 #define D_SENSOR_BIOPDU_PZEM016_RX "BioPDU PZEM016 Rx"
 #define D_SENSOR_BIOPDU_BIT    "BioPDU Bit"
 #define D_SENSOR_LOX_O2_RX     "LoxO2 RX"
-<<<<<<< HEAD
-#define D_GPIO_MAGIC_SWITCH "MagicSwitch"
 #define D_SENSOR_TM1640_CLK    "TM1640 CLK"
 #define D_SENSOR_TM1640_DIO    "TM1640 DIO"
-=======
 #define D_GPIO_MAGIC_SWITCH    "MagicSwitch"
 #define D_SENSOR_WOOLIIS_RX    "Wooliis Rx"
->>>>>>> 990a0e4257b9d180d1ad70cd8da71ddaef7f91b1
 
 // Units
 #define D_UNIT_AMPERE "A"
