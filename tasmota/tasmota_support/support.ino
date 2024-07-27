@@ -590,12 +590,17 @@ char* SetStr(const char* str) {
   return new_str;
 }
 
-bool StrCaseStr_P(const char* source, const char* search) {
+char* StrCaseStr_P(const char* source, const char* search) {
   char case_source[strlen_P(source) +1];
   UpperCase_P(case_source, source);
   char case_search[strlen_P(search) +1];
   UpperCase_P(case_search, search);
-  return (strstr(case_source, case_search) != nullptr);
+  char *cp = strstr(case_source, case_search);
+  if (cp) {
+    uint32_t offset = cp - case_source;
+    cp = (char*)source + offset;
+  }
+  return cp;
 }
 
 bool IsNumeric(const char* value) {
@@ -1534,16 +1539,7 @@ bool ValidModule(uint32_t index)
 }
 
 bool ValidTemplate(const char *search) {
-/*
-  char template_name[strlen(SettingsText(SET_TEMPLATE_NAME)) +1];
-  char search_name[strlen(search) +1];
-
-  LowerCase(template_name, SettingsText(SET_TEMPLATE_NAME));
-  LowerCase(search_name, search);
-
-  return (strstr(template_name, search_name) != nullptr);
-*/
-  return StrCaseStr_P(SettingsText(SET_TEMPLATE_NAME), search);
+  return (StrCaseStr_P(SettingsText(SET_TEMPLATE_NAME), search) != nullptr);
 }
 
 String AnyModuleName(uint32_t index)
@@ -1783,6 +1779,7 @@ bool ValidGPIO(uint32_t pin, uint32_t gpio) {
 #endif
   return (GPIO_USER == ValidPin(pin, BGPIO(gpio)));  // Only allow GPIO_USER pins
 }
+
 
 bool ValidSpiPinUsed(uint32_t gpio) {
   // ESP8266: If SPI pin selected chk if it's not one of the three Hardware SPI pins (12..14)
@@ -2651,38 +2648,6 @@ void AddLogSerial() {
 void AddLogMissed(const char *sensor, uint32_t misses)
 {
   AddLog(LOG_LEVEL_DEBUG, PSTR("SNS: %s missed %d"), sensor, SENSOR_MAX_MISS - misses);
-}
-
-void AddLogSpi(uint32_t hardware, int clk, int mosi, int miso) {
-  uint32_t enabled = TasmotaGlobal.soft_spi_enabled;
-  char hwswbus[8];
-  if (hardware) {
-#ifdef ESP8266
-    strcpy_P(hwswbus, PSTR("Hard"));
-    enabled = TasmotaGlobal.spi_enabled;
-#endif      
-#ifdef ESP32
-    strcpy_P(hwswbus, PSTR("Bus0"));
-    hwswbus[3] += (char)hardware;
-    enabled = (1 == hardware) ? TasmotaGlobal.spi_enabled : TasmotaGlobal.spi_enabled2;
-#endif
-  } else {
-    strcpy_P(hwswbus, PSTR("Soft"));
-  }
-  switch(enabled) {
-    case SPI_MOSI:
-      AddLog(LOG_LEVEL_INFO, PSTR("SPI: %s using GPIO%02d(CLK) and GPIO%02d(MOSI)"),
-        hwswbus, clk, mosi);
-      break;
-    case SPI_MISO:
-      AddLog(LOG_LEVEL_INFO, PSTR("SPI: %s using GPIO%02d(CLK) and GPIO%02d(MISO)"),
-        hwswbus, clk, miso);
-      break;
-    case SPI_MOSI_MISO:
-      AddLog(LOG_LEVEL_INFO, PSTR("SPI: %s using GPIO%02d(CLK), GPIO%02d(MOSI) and GPIO%02d(MISO)"),
-        hwswbus, clk, mosi, miso);
-      break;
-  }
 }
 
 /*********************************************************************************************\
